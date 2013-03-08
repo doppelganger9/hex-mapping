@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Text Maps to SVG Maps</title>
+    <meta name="viewport" content="width=360, initial-scale=1.0">
+	<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script type="text/javascript" src="text-mapper.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			(function() { // anonymous auto executing function to initialize textarea's contents
+				var textareaMap = $('#textMap');
+				if (textareaMap.val() == '') {
+					textareaMap.val(TextMapper.Mapper.example);
+				}
+			})();
+			
+			var handleComputeMapButtonEvent = function(event) {
+				$('#loader').show();
+				var textareaMap = $('#textMap');
+				var textMapContents = textareaMap.val();
+				$('#svg-frame').html('');
+				var mapper = TextMapper.Mapper.newMapper();
+				
+				// `mapper.initialize.call(mapper ...)` : ensures this is bound to the mapper object in the function called.
+				mapper.initialize.call(mapper, textMapContents, function() {// async callback to call when mapper init is done
+					var svgContent = mapper.svg.call(mapper); // ensures this = mapper
+					if ('console' in window && console && console.info) console.info(svgContent);// I use this to copy paste the generated SVG in a new file to keep it.
+					$('#svg-frame').html(svgContent);
+					$('#zoom').change();
+					$('#loader').hide();
+				});
+			};
+			
+			$('#computeMapButton').on('click touch', handleComputeMapButtonEvent);
+			
+			$('#zoom').on('change', function() {
+				var $this = $(this);
+				var zoom = $this.val();
+				$('#zoomStr').html($this.val());
+				$('#svg-frame').css({width:zoom + 'px', height: zoom + 'px'});
+			});
+		});
+	</script>
+	<style>
+	h1 {text-align: center;}
+	form {width: 500px; float:left;}
+	pre {overflow: auto;}
+	hr {clear: both;}
+	#svg-frame-window-scroll {height: 500px;overflow: scroll;width: 500px;float:left;position:relative;}
+	#svg-frame {height:3000px;width:3000px;}
+	textarea {width:500px;}
+	#loader {position: absolute; top: 35%; left: 35%;}
+	</style>
+</head>
+<body>
+	<h1>Text Mapper</h1>
+	<p>Submit your text description of the map.</p>
+	<form method="GET">
+		<p>You ca try with these:
+<pre>
+include https://raw.github.com/kensanata/hex-mapping/master/contrib/forgotten-depths.txt
+include https://raw.github.com/kensanata/hex-mapping/master/contrib/default.txt
+</pre>
+or
+<pre>
+include ../contrib/outdoor-survival.txt
+</pre>
+		</p>
+		<p>
+			<textarea id="textMap" style="width:100%" name="map" rows="15" columns="60">0101 mountain "mountain"
+0102 swamp "swamp"
+0103 hill "hill"
+0104 forest "horest"
+0201 empty pyramid "pyramid"
+0202 tundra "tundra"
+0203 coast "coast"
+0204 empty house "house"
+0301 woodland "woodland"
+0302 wetland "wetland"
+0303 plain "plain"
+0304 sea "sea"			
+0401 hill
+0402 sand house
+0403 jungle "jungle"
+
+0101-0404 road "road with no name"
+0205-0103-0202-0303-0402 road
+0101-0203 river
+0401-0303-0403 border
+
+include ../contrib/default.txt</textarea>
+		</p>
+		<p><input type="button" id="computeMapButton" value="Create SVG Map !"/></p>
+		<p>Zoom : <input id="zoom" type="range" title="Zoom" name="zoom" min="0" max="5000" step="50" value="500"><span id="zoomStr">500</span></p>
+	</form>
+	<div id="svg-frame-window-scroll"><img id="loader" style="display:none;" src="loader.gif"/>
+		<div id="svg-frame">
+			<!-- SVG contents will be injected here -->
+		</div>
+	</div>
+	<hr/>
+	<p>
+		<a href="https://github.com/doppelganger9/hex-mapping">GitHub</a>
+	</p>
+</body>
+</html>

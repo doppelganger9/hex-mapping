@@ -1,0 +1,231 @@
+#
+# "outdoor survival" map
+# Inspired by Wilderness Survival board game, for use with OD&D.
+#
+
+############# definitions
+
+# disable XX.YY labels
+position_labels=no
+
+text font-size="20pt" dy="15px"
+label font-size="20pt" dy="5px"
+glow stroke="white" stroke-width="5pt"
+
+mountain attributes fill="rgb(183,126,91)" stroke="white" stroke-width="1"
+mountain path attributes fill="rgb(143,86,51)"
+mountain path M 30,-30 c -5,3 -19,18 -28,28 -4,-5 -7,-10 -9,-16 -7,4 -40,43 -43,53 2,2 4,2 6,2 7,-8 26,-40 34,-46 10,14 26,31 35,49 2,-1 4,-3 5,-3 C 30,33 16,18 3,0 11,-8 21,-19 29,-25 39,-9 49,-3 58,13 60,12 60,11 61,10 61,5 42,-7 29,-30 z
+
+high-mountain attributes fill="rgb(183,126,91)" stroke="white" stroke-width="1"
+high-mountain path attributes fill="white"
+high-mountain path M 30,-30 c -5,3 -19,18 -28,28 -4,-5 -7,-10 -9,-16 -7,4 -40,43 -43,53 2,2 4,2 6,2 7,-8 26,-40 34,-46 10,14 26,31 35,49 2,-1 4,-3 5,-3 C 30,33 16,18 3,0 11,-8 21,-19 29,-25 39,-9 49,-3 58,13 60,12 60,11 61,10 61,5 42,-7 29,-30 z
+
+swamp attributes fill="rgb(159,218,148)" stroke="white" stroke-width="1"
+swamp path attributes fill="rgb(119,178,108)"
+swamp path m 2,-47 c -3,2 -2,12 1,5 2,-2 2,-5 -1,-5 z m -7,3 c -7,1 6,10 1,2 l 0,-1 z m 8,8 c -7,1 -15,3 -22,3 0,5 6,1 9,3 7,-2 15,-4 23,0 6,2 13,-1 19,-2 -2,-6 -12,3 -17,-1 -4,-1 -8,-2 -12,-3 z m -58,7 c -2,5 6,8 8,10 3,-4 -5,-7 -8,-10 z m 20,2 c -3,1 -4,9 -1,6 2,-2 5,-6 1,-6 z m -8,1 c 0,0 0,0 -1,0 -1,3 1,6 3,5 1,-2 1,-5 -2,-5 z m -21,9 c -1,6 10,5 15,4 7,-2 14,-1 21,1 2,0 12,2 10,-2 -7,0 -15,-3 -23,-3 -6,0 -13,4 -20,1 -1,-1 -2,-1 -3,-1 z M 47,-27 c -4,3 -3,13 1,6 1,-2 2,-5 -1,-6 z m -7,3 c -8,1 5,11 1,3 0,-1 -1,-2 -1,-3 z m 7,9 c -7,1 -14,2 -21,2 -1,5 6,1 8,3 8,-2 16,-3 23,0 7,2 13,-1 19,-2 -2,-6 -12,3 -17,-1 -4,-1 -8,-2 -12,-2 z m -63,11 c -4,3 7,14 4,5 -1,-2 -2,-4 -4,-5 z m 10,2 c -4,2 -3,12 0,5 1,-1 4,-5 0,-5 z M -50,8 c -1,0 -1,0 -2,0 -4,2 -14,-1 -15,4 1,0 1,0 2,1 8,-1 17,-3 25,1 7,1 13,-4 19,0 6,-1 13,-4 20,0 5,-4 -6,-4 -8,-6 -8,3 -15,3 -23,2 -6,4 -12,-2 -18,-2 z m 80,1 c -2,5 6,8 8,11 3,-5 -5,-8 -8,-11 z m 20,2 c -3,1 -4,7 -2,5 3,-1 3,-2 2,-5 z m -7,1 c -1,0 -1,0 -2,1 -1,2 2,7 3,5 0,-2 1,-6 -1,-6 z m -22,9 c -1,6 10,5 15,5 6,-3 14,-2 21,0 2,0 12,2 10,-2 -7,0 -15,-3 -23,-3 -6,0 -13,5 -20,1 -1,0 -2,-1 -3,-1 z m -36,11 c -2,1 -6,10 -2,7 1,-2 8,-6 2,-7 z m -5,2 c -6,0 0,12 0,3 1,-1 0,-2 0,-3 z m 14,8 c -7,1 -15,4 -22,0 -6,0 -14,0 -17,3 4,4 11,-3 17,1 7,3 15,0 23,-1 7,0 13,5 21,1 6,-1 12,2 19,2 C 38,43 27,44 24,44 16,41 9,47 2,43 -1,42 -3,42 -6,42 z
+
+grassland attributes fill="rgb(144,208,88)" stroke="white" stroke-width="1"
+grassland path attributes fill="rgb(84,148,28)"
+grassland path M -18,-13 C -13,-6 -13,4 -8,12 C -11,14 -15,21 -18,26 C -20,17 -22,4 -28,0 C -26,-4 -21,-9 -18,-13 z M 5,-31 C 4,-19 3,-6 6,5 C 1,10 -0,14 -3,19 C -2,6 -3,-4 -4,-16 C -4,-21 2,-26 5,-31 z M 26,-1 C 16,6 19,5 9,18 C 12,3 21,-8 34,-17 C 32,-12 29,-6 27,-1 z
+
+forest attributes fill="rgb(104,161,51)" stroke="white" stroke-width="1"
+forest path attributes fill="rgb(64,121,11)"
+forest path m -12,-34 c -6,3 -5,3 -7,15 -5,3 -31,1 -28,16 2,9 8,7 16,11 -8,10 -11,16 -9,20 2,4 8,7 21,5 3,13 8,15 13,16 5,1 13,0 19,-11 12,6 26,9 30,6 4,-3 8,-16 3,-28 C 58,9 53,3 53,-2 52,-7 44,-7 32,-11 c 3,-13 4,-13 1,-16 -4,-3 -13,-7 -24,0 -8,-10 -14,-10 -20,-8 z m 3,4 c 4,-1 9,-1 16,8 9,-6 18,-4 22,-1 3,2 1,4 -1,15 11,3 20,5 20,9 C 49,4 53,8 43,13 47,24 44,36 41,39 38,42 22,38 12,33 7,43 1,44 -3,44 -7,43 -14,40 -16,29 -27,30 -32,29 -34,26 c -2,-4 1,-9 8,-18 -9,-5 -20,-4 -13,-18 2,-4 12,-5 23,-5 2,-11 4,-14 8,-15 z
+
+desert attributes fill="rgb(255,255,178)" stroke="white" stroke-width="1"
+# todo : desert path + attributes
+
+road path attributes stroke="black" stroke-width="3" stroke-dasharray="10 10" fill="none"
+river path attributes stroke="#7fffd4" stroke-width="10" stroke-linecap="round" fill="none"
+track path attributes stroke="black" stroke-width="3" stroke-opacity="0.5" fill="none"
+ford path attributes stroke="black" stroke-width="15" stroke-opacity="0.2" fill="none"
+
+textonly path attributes stroke="none" fill="none"
+textonly path textAttributes font-size="40pt" stroke="white" stroke-width="2" fill="white" fill-opacity="0.5" stroke-opacity="0.5"
+#textonly path textPathAttributes 
+
+h1 path attributes stroke="none" fill="none"
+h1 path textAttributes font-size="100pt" stroke="white" stroke-width="2" fill="white" fill-opacity="0.5" stroke-opacity="0.5"
+#h1 path textPathAttributes 
+
+#############
+
+# fill every hex with plains before overwriting them with the regions defined below
+F0101-4334 grassland
+
+## title example
+0101-0305-0409 h1 "This is the Wilderness Survival Board !"
+0202-0405-0509 textonly "this is the title's subtitle, woot !"
+
+## Ok, the region names are totally invented. Please don't take them seriously I had to use them to recreate the WS map ...
+
+# "NW Desert"
+R0109-14 0209-14 0310-17 0409-17 0510-17 0609-16 0710-16 0811-15 desert
+# "NW Mtn Range"
+R0210 0310 0409 0506-09 0605-08 0705-08 0805-07 0906-07 mountain
+# "NW White Mtns"
+R0606-07 0706 high-mountain
+# "First Scar"
+R0610 0710 0809 0909 1008 1108 mountain
+# "Second Scar"
+R0413 0513 0612 0712 0811 0911 1010 mountain
+# "Third Scar"
+R0614 0714 0813 0913 1012 1112 mountain
+0812-1013 track
+# "Arrow Range"
+R0217 0317-18 0417-18 0517 0616 0716 0815 0915 1014 mountain
+# "NW Woods"
+R0816-17 0916-18 1015-18 1115-18 1109-10 1208-17 1308-17 1404-14 1504-14 1606-13 1706-13 forest
+1114-1415 road
+1111-1311-1813 road "TEST LABEL"
+# "N Mtns"
+R1807-10 1907-11 2006-10 2106-10 2205-09 2305-11 2405-11 2506-12 2012 2112 2211 mountain
+# "N High Mtns"
+R1908 2007-08 2107-09 2306-07 2407 high-mountain
+2105-2205-2207-2408-2409-2610 road
+# "Dart Range"
+R1218 1318 1417 1517 1616 1715-16 1816 mountain
+# "CE Forest NW"
+R0123-25 0222-24 0322-25 0421-25 0521-25 0620-21 0720-21 0820 0920 1019-20 1120-21 forest
+0919-0921 road
+# "CE Forest SE"
+R1123 0828 0928 1027 1127 1223-26 forest
+0332-0231-0331-0329-0428-0427-0726-0725-0824-0825-0926-1324 road
+# "CE Forest SW"
+R0128-32 0227-31 0327-31 0427-30 0527-28 0627 forest
+# "CE Forest Mtn"
+R0829 0929-30 1028-29 1128-29 1227-28 1325-28 mountain
+# "West Marsh"
+R0622-26 0722-27 0821-27 0922-27 1023-26 1124-26 swamp
+
+3100-3108-3208-3308 river "TEST RIVER LABEL"
+3108-3208-3209-3110 river
+3208-3209-3310-3317-3518-3519-3619-3620-3922-3925-4427 river
+4126-4226-4328-4428 river
+3107-3109-3009-3010-2911-2912-1917-1918-1818-1819-1620-1623-1424-1426-1527-1530-0535 river
+1132-1032-1033-0934-0735 river
+1623-1524-1323-1223-1123-1122-0823 river
+0725-0327-0126-0026 river
+0727-0729-0530-0630-0332-0333-0134-0033 river
+
+1422-1424 ford
+0326-0127 ford
+0231-0432 ford
+2314-2515 ford
+1429-1628 ford
+1131-1133 ford
+3003-3204 ford
+3418-3617 ford
+3520-3719 ford
+3820-3822 ford
+4125-4127 ford
+1719-1920 ford
+
+# "The central desolation"
+R2520-24 2619-26 2719-27 2818-26 2918-26 3017-25 3116-25 3217-24 desert
+# "N Forest"
+R2601-09 2701-09 2801-08 2902-07 3002-06 3204-06 3305-07 3310-11 3405-10 3506-11 3606-10 forest
+# "N Marsh"
+R2908-10 3007-10 3107-10 3207-09 3308-09 swamp
+# "NE Forest"
+R3901-03 4001-04 4101-04 4201-07 4301-08 forest
+# "NE Mtns"
+R3904 4004-09 4105-09 mountain
+# "NEE Woods"
+R4113-14 4211-14 4312-15 forest
+# "East Wood"
+R4018-22 4119-23 4219-25 4320-25 forest
+# "EC Mtns"
+R3711-18 3811-17 mountain
+3615-3814-3915 track
+# "ECC Mtns"
+R3411-15 mountain
+3315-3414-3515 track
+# "NC Wood"
+R2614-15 2714-16 2813-16 2913 2915-16 3012 3014-15 3112 3114-15 forest
+# "ECCC Mtns"
+R2914 3013 3113 3210-13 mountain
+# "Fishhead Woods"
+R2117 2216-17 2316-18 2415-18 2516-18 forest
+# "Y Mtns"
+R2017 2118 2218 2319 2419-23 2519-23 2618-19 2718-19 2817-18 2917-18 mountain
+2617-2718-2720 track
+# "Fishtail Woods"
+R1524-25 1623-24 1721-24 1820-23 1918-23 2018-22 2119-22 2219-21 2320-21 forest
+1819-1820-1921-1922-2123 road
+# "YOY Mtns"
+R2229 2329-30 2428-29 2528-29 2627-28 2727-28 2826-27 2926-27 3025-26 3125-26 3217-25 3318-25 3421-24 3522-25 3622-25 3723-25 mountain
+# "YOY High Mtns"
+R3322-23 3422 3523-24 mountain
+# "South Woods"
+R1826-34 1926-34 2025-34 2125-34 2224-27 2325-27 2425-26 forest
+2525-1729 road
+# "South Woods"
+R2631 2731-32 2830-31 2930-31 3029-30 3129-30 3228-29 3328-29 3427-28 3527-28 3626-28 3726-28 3826-27 3927-28 4027-28 4128-29 4228-29 4329 forest
+3028-3031 road
+# "SouthEast range"
+R2734 2833 2933-34 3032-33 3132-33 3231-32 3331-32 3430-31 3530-31 3629-30 3729-30 mountain
+3031-3132-3133-3233 track
+
+### TODO : map markers in some position inside an Hex
+#lz01:M0506NW lozenge
+#lz02:M0912C lozenge
+#Third Scar Circle:M1211C circle
+#c02:M1013S circle'
+#lz03:M1014S lozenge'
+#c03:M1508NE circle'
+#lz04:M1713SE lozenge'
+#c04:M1404NW circle'
+#lz05:M1404SE lozenge'
+#lz06:M1405SE lozenge'
+#lz07:M1315SW lozenge'
+#c05:M1117S circle'
+#lz08:M2105C lozenge'
+#c06:M2205NE circle'
+#c07:M2308W circle'
+#c08:M2510E circle'
+#lz09:M2510SE lozenge'
+#sq01:M2313C square'
+#c09:M1518NW circle'
+#sq02:M1917C square'
+#sq03:M0118E square'
+#lz10:M0317N lozenge'
+#lz11:M0325NE lozenge'
+#c10:M0824C circle'
+#lz12:M1224NW lozenge'
+#lz13:M0527NW lozenge'
+#c11:M0930SE circle'
+#sq04:M2201C square'
+#lz14:M1422C lozenge'
+#lz15:M2414W lozenge'
+#lz16:M2525S lozenge'
+#c12:M2703C circle'
+#lz17:M3003W lozenge'
+#c13:M2805C circle'
+#lz18:M2911W lozenge'
+#c14:M4203C circle'
+#c15:M3904S circle'
+#lz19:M4113E lozenge'
+#sq05:M4318W square'
+#c16:M4121SE circle'
+#lz20:M4121NW lozenge'
+#lz21:M3715NW lozenge'
+#c17:M3414NE circle'
+#lz22:M2615NE lozenge'
+#sq06:M2717C square'
+#sq07:M2317C square'
+#c18:M2719S circle'
+#sq08:M2322SW square'
+#c19:M2423S circle'
+#lz23:M1820W lozenge'
+#c20:M1922SE circle'
+#c21:M2927S circle'
+#lz24:M2928SW lozenge'
+#lz25:M3526C lozenge'
+#c22:M3625SW circle'
+#lz26:M1728C lozenge'
+#lz27:M1732C lozenge'
+#c23:M1832W circle'
+#sq09:M2233C square'
+#lz28:M2127NW lozenge'
+#c24:M2127SE circle'
