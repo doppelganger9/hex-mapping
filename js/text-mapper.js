@@ -385,8 +385,6 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 			var xEnd = +groups[3];
 			var yEnd = +groups[4];
 			
-			var _types = groups[5].split(/\s+/);
-			
 			for (var xx = xStart; xx <= xEnd; xx++) {
 				for (var yy = yStart; yy <= yEnd; yy++) {
 					var hex = TextMapper.Hex.newHex({
@@ -394,9 +392,9 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 						y: yy, 
 						map: this, 
 						label: undefined,
-						type: _types}
+						type: groups[5].trim().split(/\s+/)/* this create a new array for each hex*/}
 					);
-					this.add(hex);
+					this.addOrReplaceHex(hex);
 				}
 			}
 			
@@ -406,8 +404,7 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 			// `R0101-03 terrainType	"region label"` ca be used in place of `R0101-0102-0103 terrainType	"region label"`
 			
 			var groups = /^[Rr]((?:\d\d\d\d(?:-\d\d\d\d)*(?:-\d\d)?\s?)+)\s+?([^"\r\n]+)?\s*(?:"(.+)")?/.exec(arg);
-			var _types = groups[2].split(/\s+/);
-			var hexfills = groups[1].split(/\s+/);// allows more than one value, separated by some space or tab..
+			var hexfills = groups[1].trim().split(/\s+/);// allows more than one value, separated by some space or tab..
 			
 			for (var k=0; k<hexfills.length; k++) {
 				var hexfill = hexfills[k];
@@ -423,9 +420,9 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 							y: hexCoordGroups[g].substring(2,4), 
 							map: this, 
 							label: groups[3],
-							type: _types}
+							type: groups[2].trim().split(/\s+/)}
 						);
-						this.add(hex);
+						this.addOrReplaceHex(hex);
 						maybeExtendedHex = hex;
 					}
 				} else {
@@ -434,9 +431,9 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 						y: hexfillGroups[1].substring(2,4), 
 						map: this, 
 						label: groups[3],
-						type: _types}
+						type: groups[2].trim().split(/\s+/)}
 					);
-					this.add(hex);
+					this.addOrReplaceHex(hex);
 					maybeExtendedHex = hex;
 				}
 				
@@ -450,19 +447,19 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 							y: yy,
 							map: this, 
 							label: groups[3],
-							type: _types}
+							type: groups[2].trim().split(/\s+/)}
 						);
-						this.add(hex);
+						this.addOrReplaceHex(hex);
 					}
 				}
 			}
 			next();
-		} else if (/^(\d\d)(\d\d)\s+([^"\r\n]+)?\s*(?:"(.+)")?/.test(arg)) {
-			// `0101	mountain	"The Everest"`
 			
-			var groups = /^(\d\d)(\d\d)\s+([^"\r\n]+)?\s*(?:"(.+)")?/.exec(arg);
+		} else if (/^M(\d\d)(\d\d)\s+([^"\r\n]+)?\s*(?:"(.+)")?/.test(arg)) {
+			// `M0506 ruins_NW "lz01"`
+			var groups = /^M(\d\d)(\d\d)\s+([^"\r\n]+)?\s*(?:"(.+)")?/.exec(arg);
 		
-			var _types = groups[3].split(' ');
+			var _types = groups[3].trim().split(/\s+/);
 			var hex = TextMapper.Hex.newHex({
 				x: groups[1], 
 				y: groups[2], 
@@ -471,7 +468,24 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 				type: _types}
 			);
 	  
-			this.add(hex);
+			this.mergeHex(hex);
+			next();
+			
+		} else if (/^(\d\d)(\d\d)\s+([^"\r\n]+)?\s*(?:"(.+)")?/.test(arg)) {
+			// `0101	mountain	"The Everest"`
+			
+			var groups = /^(\d\d)(\d\d)\s+([^"\r\n]+)?\s*(?:"(.+)")?/.exec(arg);
+		
+			var _types = groups[3].trim().split(/\s+/);
+			var hex = TextMapper.Hex.newHex({
+				x: groups[1], 
+				y: groups[2], 
+				map: this, 
+				label: groups[4]?groups[4].trim():groups[4],
+				type: _types}
+			);
+	  
+			this.addOrReplaceHex(hex);
 			next();
 		} else if (/^(\d\d\d\d(?:-\d\d\d\d)+)\s+([^"\r\n]+)?\s*(?:"(.+)")?/.test(arg)) {
 			// `0101-0102-0202	road	"some optional label to write along the road"`
@@ -585,6 +599,50 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 
 	var add = function(hex) {
 		this.hexes.push(hex);
+	};
+	
+	var addOrReplaceHex = function(hex) {
+		// add a type to an existing hex if it exists, or else add the new hex.
+		var foundExistingHexAtSamePos = undefined;
+		for (var i=0; i<this.hexes.length; i++) {
+			var existingHex = this.hexes[i];
+			if (existingHex.x === hex.x && existingHex.y === hex.y) {
+				foundExistingHexAtSamePos = existingHex;
+				break;
+			}
+		}
+		if (foundExistingHexAtSamePos) {
+			// will replace types for previously defined hex.
+			foundExistingHexAtSamePos.type = hex.type;
+			// will replace label for previously defined hex.
+			foundExistingHexAtSamePos.label = hex.label;
+		} else {
+			// simply add the hex.
+			this.hexes.push(hex);
+		}
+	}
+
+	var mergeHex = function(hex) {
+		// add a type to an existing hex if it exists, or else add the new hex.
+		var foundExistingHexAtSamePos = undefined;
+		for (var i=0; i<this.hexes.length; i++) {
+			var existingHex = this.hexes[i];
+			if (existingHex.x === hex.x && existingHex.y === hex.y) {
+				foundExistingHexAtSamePos = existingHex;
+				break;
+			}
+		}
+		if (foundExistingHexAtSamePos) {
+			for (var i=0; i<hex.type.length; i++) {
+				// TODO remove duplicates ?
+				foundExistingHexAtSamePos.type.push(hex.type[i]);
+			}
+			foundExistingHexAtSamePos.label = (foundExistingHexAtSamePos.label ? foundExistingHexAtSamePos.label : "") 
+				+ (hex.label && foundExistingHexAtSamePos.label ? ", " : "")
+				+ (hex.label ? hex.label : "");
+		} else {
+			this.hexes.push(hex);
+		}
 	};
 
 	var svg = function() {
@@ -736,6 +794,8 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 				initialize:initialize,
 				process:process,
 				add:add,
+				addOrReplaceHex:addOrReplaceHex,
+				mergeHex:mergeHex,
 				svg:svg,
 				newMapper:newMapper
 			};
