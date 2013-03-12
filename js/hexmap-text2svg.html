@@ -7,6 +7,28 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<script type="text/javascript" src="text-mapper.js"></script>
 	<script type="text/javascript">
+		function parsePathAndRoundNumbers(str) {
+			var parsed = [];
+			var _str, i, regex = /^(\-?(?:\d+\.)?\d+),(\-?(?:\d+\.)?\d+)$/;
+			var split = str.split(/ /);
+
+			for (i=0;i<split.length;i++) {
+				_str = split[i];
+				if (regex.test(_str)) {
+					var group = regex.exec(_str);
+					var a = group[1]; // arrondir a
+					var b = group[2]; // arrondir b
+					//console.debug("(a,b) : " + a + ", " + b);
+
+					parsed.push(Math.round(a) + ',' + Math.round(b));
+				} else {
+					parsed.push(_str);
+				}
+			}
+			
+			return parsed.join(' ');
+		}
+	
 		$(document).ready(function() {
 			(function() { // anonymous auto executing function to initialize textarea's contents
 				var textareaMap = $('#textMap');
@@ -14,7 +36,7 @@
 					textareaMap.val(TextMapper.Mapper.example);
 				}
 			})();
-			
+						
 			var handleComputeMapButtonEvent = function(event) {
 				$('#loader').show();
 				var textareaMap = $('#textMap');
@@ -33,7 +55,10 @@
 			};
 			
 			$('#computeMapButton').on('click touch', handleComputeMapButtonEvent);
-			
+			$('#svg-path').on('keyup', function() {
+				var $this = $(this);
+				$('#svg-path-rounded').html(parsePathAndRoundNumbers($this.val()));
+			});
 			$('#zoom').on('change', function() {
 				var $this = $(this);
 				var zoom = $this.val();
@@ -68,10 +93,11 @@ include ../contrib/outdoor-survival.txt
 </pre>
 		</p>
 		<p>
-			<textarea id="textMap" style="width:100%" name="map" rows="15" columns="60">0101 mountain "mountain"
+			<textarea id="textMap" style="width:100%" name="map" rows="15" columns="60">			
+0101 mountain "mountain"
 0102 swamp "swamp"
 0103 hill "hill"
-0104 forest "horest"
+0104 forest "forest"
 0201 empty pyramid "pyramid"
 0202 tundra "tundra"
 0203 coast "coast"
@@ -79,17 +105,19 @@ include ../contrib/outdoor-survival.txt
 0301 woodland "woodland"
 0302 wetland "wetland"
 0303 plain "plain"
-0304 sea "sea"			
-0401 hill
-0402 sand house
+0304 sea "sea"
+0401 hill tower "tower"
+0402 sand house "house"
 0403 jungle "jungle"
-
-0101-0404 road "road with no name"
+0502 sand "sand"
 0205-0103-0202-0303-0402 road
 0101-0203 river
 0401-0303-0403 border
 
-include ../contrib/default.txt</textarea>
+include ../contrib/default.txt
+</textarea>
+<!--
+-->
 		</p>
 		<p><input type="button" id="computeMapButton" value="Create SVG Map !"/></p>
 		<p>Zoom : <input id="zoom" type="range" title="Zoom" name="zoom" min="0" max="5000" step="50" value="500"><span id="zoomStr">500</span></p>
@@ -100,6 +128,10 @@ include ../contrib/default.txt</textarea>
 		</div>
 	</div>
 	<hr/>
+	<p>SVG Path to round : <input id="svg-path" type="text" size="100" ></input><br/>
+		<pre id="svg-path-rounded" />
+	</p>
+	
 	<p>
 		<a href="https://github.com/doppelganger9/hex-mapping">GitHub</a>
 	</p>
