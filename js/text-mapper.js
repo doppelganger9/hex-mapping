@@ -565,10 +565,10 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 				next();
 			} else {
 				var urlToGET = groups[1];
-				this.seen[groups[1]] = 1;
+				this.seen[urlToGET] = 1;
 				
 				var that = this; // capture this in async closure below
-				$.get(groups[1], function(data, status) {
+				$.get(urlToGET).done(function(data, status) {
 					if (status == 'success') {
 						var includeDataSplittedByLineBreaks = data.split(/\r?\n+\s*/);
 						asyncLoop({
@@ -579,7 +579,7 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 								},0);
 							},
 							callback : function(){
-								//console.info('Include asynchronous loop processing done !');
+								if ('console' in global && global.console && global.console.info) global.console.info('Include asynchronous loop processing done !');
 								next(); // back to the main async loop ...
 							}    
 						});
@@ -587,12 +587,16 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 						that.messages.push(status);
 						next();
 					}
+				}).fail(function(jqxhr, textStatus, errorThrown) {
+					if ('console' in global && global.console && global.console.error) global.console.error ("AJAX GET Failed for " + urlToGET + "; " + textStatus + " ; " + errorThrown);
+					that.messages.push("Failed to include " + urlToGET);
+					next();
 				});
 			}
 		} else {
 			// for comments or empty lines or other unknown malformed lines
 			
-			//console.info('ignored line : \n'+arg+'');
+			//if ('console' in global && global.console && global.console.info) global.console.info('ignored line : \n'+arg+'');
 			next();
 		}
 	};
@@ -750,7 +754,7 @@ TextMapper.Mapper = TextMapper.Mapper || (function(global) {
 			if (topHex === hex) { // NOTE : to enable hex stacking, comment these and leave only the following line
 				doc += hex.svg();
 			//} else {
-			//	console.info ('ignored an hex because there is another over it at the same coordinates');
+			//	if ('console' in global && global.console && global.console.info) global.console.info ('ignored an hex because there is another over it at the same coordinates');
 			}
 		}
 		for (var i = 0; i < this.lines.length; i++) {
